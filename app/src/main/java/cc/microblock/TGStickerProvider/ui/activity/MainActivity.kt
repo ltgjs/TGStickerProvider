@@ -311,9 +311,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 2339) {
-            if (Environment.isExternalStorageManager()) {
-                onGainedPermission()
-                return
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                if (Environment.isExternalStorageManager()) {
+                    onGainedPermission()
+                    return
+                }
             }
             Toast.makeText(
                 this,
@@ -322,7 +324,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
             ).show()
             requestPermission()
         }
-
     }
 
     var filter = ""
