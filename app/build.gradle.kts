@@ -64,6 +64,8 @@ dependencies {
     testImplementation(junit.junit)
     androidTestImplementation(androidx.test.ext.junit)
     androidTestImplementation(androidx.test.espresso.espresso.core)
-    implementation("com.arthenica:ffmpeg-kit-min:6.0-2")
+    implementation(files("libs/ffmpeg-kit-min-gpl-LTS.aar"))
     implementation("com.github.bumptech.glide:glide:4.16.0")
+    implementation(files("libs/smart-exception-java-0.2.1.jar"))
+    implementation(files("libs/smart-exception-common-0.2.1.jar"))
 }
