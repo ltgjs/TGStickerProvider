@@ -1,26 +1,44 @@
 name: Android CI
 
 on:
-  push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
-
+  workflow_dispatch:
+  
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v3
-    - name: set up JDK 11
-      uses: actions/setup-java@v3
-      with:
-        java-version: '11'
-        distribution: 'temurin'
-        cache: gradle
+      - uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
 
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-    - name: Build with Gradle
-      run: ./gradlew build
+      - name: Download ffmpeg-kit-min-gpl-LTS.aar
+        run: |
+          mkdir -p app/libs
+          curl -L -o app/libs/ffmpeg-kit-min-gpl-LTS.aar https://github.com/meetleev/flutter-ffmpeg-kit/releases/download/6.0.3/ffmpeg-kit-min-gpl-LTS.aar
+
+      - name: Download smart-exception jars
+        run: |
+          mkdir -p app/libs
+          curl -L -o app/libs/smart-exception-0.2.1.jar https://github.com/tanersener/smart-exception/releases/download/v0.2.1/smart-exception-0.2.1.jar
+          curl -L -o app/libs/smart-exception-common-0.2.1.jar https://github.com/tanersener/smart-exception/releases/download/v0.2.1/smart-exception-common-0.2.1.jar
+          curl -L -o app/libs/smart-exception-java-0.2.1.jar https://github.com/tanersener/smart-exception/releases/download/v0.2.1/smart-exception-java-0.2.1.jar
+
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build APK (Debug)
+        run: ./gradlew assembleDebug
+
+      - name: List APK files
+        run: find . -name "*.apk"
+
+      - name: Upload APK (Debug)
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug.apk
+          path: app/build/outputs/apk/debug/app-debug.apk
